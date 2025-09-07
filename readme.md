@@ -28,16 +28,16 @@ DeFi (Decentralized Finance) is a system where financial services are done on bl
 
 # Problems with Existing Cryptocurrencies
  ## Price Volatility:
- . Cryptos like Bitcoin and Ethereum change value very fast.
+   Cryptos like Bitcoin and Ethereum change value very fast.
   Example: BTC can go up or down 10% in a single day.
   Makes them hard to use for payments, trading, or loans.
- . Not Reliable for Daily Transactions:
+ ## Not Reliable for Daily Transactions:
    If you pay with BTC today, its value could drop tomorrow.
    People can lose money unintentionally.
- . Difficult for Lending & Borrowing:
+ ## Difficult for Lending & Borrowing:
    Lenders risk losing value if crypto prices drop.
    Borrowers need to deposit extra collateral due to volatility.
- . Limited Adoption for Businesses:
+ ## Limited Adoption for Businesses:
    Businesses don’t want to accept crypto that keeps changing value.
    Hard to use for salaries, payments, or savings.
 
