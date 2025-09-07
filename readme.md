@@ -1,4 +1,4 @@
-# 1. What is DeFi?
+# What is DeFi?
 
 DeFi (Decentralized Finance) is a system where financial services are done on blockchain, without banks or middlemen. Everything is peer-to-peer and controlled by smart contracts (programs on blockchain that run automatically).
 
