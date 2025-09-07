@@ -45,3 +45,47 @@ DeFi (Decentralized Finance) is a system where financial services are done on bl
   Stablecoins are pegged to real money (like USD) → value stays stable.
   They allow safe payments, trading, lending, and borrowing in DeFi.
   Reduce the risk of losing money due to crypto price swings.
+
+  # What is Stable coins
+  A stable coin is a crypto asset whose buying power stays relatively stable. Unlike bitcoin or ethereum the value does not swing up or down so much
+
+  # categories and properties
+   *** Relative stability ***
+   *** stablity Method ***
+   *** collateral type ***
+
+## Relative stability 
+  ### Pegged/Anchored Stablecoins :
+     value is tied to something else, usually the us dollar
+     ex: USDC ,USDT , DAI
+  ### Floating 
+   Not pegged to one asset instead algorithms keep their buying power steady overtime 
+   ex:RAI not pegged but tries to keep its value stable with some math
+
+## Stability Method 
+ ### Governed : 
+  humans or organiztion decide when coins are creasted (minted) or destoryed (burned)
+  ex: USDC USDT (circle and tether control them)
+ ### Algorithmic :
+ controlled by code not the people 
+ algorithm automatically mint / burn coin to keep value stable
+ ex: UST ,DAI
+
+ ## Collateral Type
+  collateral mean swhat backs the stable coin
+  ### Exogenous collateral
+   outside assets , backed by real world money or external assests 
+   ex: usdc -> backed buy real dollar bank 
+   if usdc fails the us dollar is itill fine
+   DAI -> backed by ETH & other cryptocurriences
+ ### Endogenous collateral (inside the system)
+  backed by tokens created inside the same protocol
+   ex :ust was backed by LUNA - when UST fails LUNA fails too
+
+
+# Top Stable coins
+ 1. DAI -> pegged algorithmic and exo
+ 2. USDC -> pegged governed and exo
+ 3. UST & LUNA -> pegged algo endo
+ 4. FRAX ->pegged algo hybrid
+ 5. RAI -> floating Algo exo
