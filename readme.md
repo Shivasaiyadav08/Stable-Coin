@@ -41,6 +41,7 @@ DeFi (Decentralized Finance) is a system where financial services are done on bl
    Businesses don’t want to accept crypto that keeps changing value.
    Hard to use for salaries, payments, or savings.
 
+
 # ✅ Why Stablecoins Solve This:
   Stablecoins are pegged to real money (like USD) → value stays stable.
   They allow safe payments, trading, lending, and borrowing in DeFi.
@@ -48,6 +49,61 @@ DeFi (Decentralized Finance) is a system where financial services are done on bl
 
   # What is Stable coins
   A stable coin is a crypto asset whose buying power stays relatively stable. Unlike bitcoin or ethereum the value does not swing up or down so much
+
+
+# Examples:
+## 1
+Imagine Alice wants to pay for her groceries with crypto:
+She owns 1 ETH.
+Today, 1 ETH = $2,000 → enough to buy groceries.
+Tomorrow, ETH crashes to $1,500 → now her grocery payment lost $500 in value.
+💡 Problem: Cryptos like ETH, BTC are too volatile for everyday payments or savings.
+Now, if Alice uses a stablecoin (like USDC or your stablecoin):
+1 stablecoin = $1, always.
+She pays $50 worth of stablecoins → value stays $50 regardless of market swings.
+
+## 2
+🔹 Step 1: Deposit Collateral → Mint Stablecoin
+Alice has 1 ETH = $2,000.
+She wants to mint stablecoins.
+Rule: System requires 150% collateral ratio (safety margin).
+So with $2,000 ETH, Alice can mint up to $1,333 stablecoins.
+Why not full $2,000? → To protect against ETH price drops.
+
+🔹 Step 2: Use Stablecoins
+Alice spends or invests her 1,333 stablecoins.
+These stablecoins stay pegged to $1 each because they are backed by ETH collateral.
+
+🔹 Step 3: Repay & Burn
+Later, Alice wants her ETH back.
+She must repay 1,333 stablecoins + small interest/fee.
+Smart contract burns those stablecoins.
+Alice gets back her 1 ETH collateral.
+
+🔹 Step 4: What if ETH Price Drops? (Liquidation)
+Suppose ETH falls from $2,000 → $1,500.
+Alice’s collateral = $1,500.
+But her debt = $1,333 stablecoins.
+Now collateral ratio = 112%, below the safe limit (150%).
+This is risky → system must act!
+
+🔹 Step 5: Liquidation (How Others Profit)
+The protocol opens liquidation.
+Another user (Bob) can pay Alice’s debt of 1,333 stablecoins.
+In return, Bob gets Alice’s ETH at a discount (say 5–10%).
+Example: Bob repays 1,333 stablecoins and gets $1,400 worth of ETH.
+Bob makes $67 profit, and system stays safe.
+
+🔹 Why This Works
+Alice’s debt is cleared (stablecoins burned).
+Bob makes profit by buying discounted ETH.
+System stays stable because every stablecoin in circulation is still fully backed by collateral.
+✅ Summary in Simple Words:
+Deposit collateral → Mint stablecoins.
+Repay stablecoins → Get collateral back.
+If collateral drops too much → Liquidation happens.
+Other users repay the debt and earn profit from collateral discount.
+This keeps the stablecoin safe and always pegged near $1.
 
   # categories and properties
    *** Relative stability ***
@@ -89,3 +145,18 @@ DeFi (Decentralized Finance) is a system where financial services are done on bl
  3. UST & LUNA -> pegged algo endo
  4. FRAX ->pegged algo hybrid
  5. RAI -> floating Algo exo
+
+
+# Design of Stable coin we are going to create
+1. Relative Stability: Anchored or Pegged to the US Dollar
+   Chainlink Pricefeed
+   Function to convert ETH & BTC to USD
+2. Stability Mechanism (Minting/Burning): Algorithmicly Decentralized
+   Users may only mint the stablecoin with enough collateral
+3. Collateral: Exogenous (Crypto)
+   wETH
+   wBTC
+
+
+# Working
+ 
