@@ -159,4 +159,11 @@ This keeps the stablecoin safe and always pegged near $1.
 
 
 # Working
- 
+User deposits collateral (wETH / wBTC) → collateral is locked in the protocol.
+User mints stablecoins up to a safe collateralization ratio (e.g., 150%).
+Stablecoins circulate — user can spend, lend, or provide liquidity.
+Protocol constantly checks collateral ratio using Chainlink price feeds.
+If ratio falls below liquidation threshold (e.g., 120%) → protocol allows liquidation.
+Liquidator repays debt (stablecoins) and receives collateral at a discounted price (liquidation bonus).
+Stablecoins used to repay debt are burned. Collateral transferred to liquidator.
+If user repays full debt + fees, they call burn & withdraw → stablecoins burned, collateral released.
