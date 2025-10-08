@@ -168,6 +168,12 @@ Liquidator repays debt (stablecoins) and receives collateral at a discounted pri
 Stablecoins used to repay debt are burned. Collateral transferred to liquidator.
 If user repays full debt + fees, they call burn & withdraw → stablecoins burned, collateral released.
 
+| Total collateral (USD) | Collateral % (threshold) | Debt you’re allowed |
+| ---------------------- | ------------------------ | ------------------- |
+| \$10,000               | 80%                      | \$8,000             |
+| \$10,000               | 60%                      | \$6,000             |
+| \$10,000               | 90%                      | \$9,000             |
+
 
 # Token
 A token is just a digital asset created on top of a blockchain.
@@ -245,12 +251,45 @@ If you invented your own custom interface, every wallet/exchange would need to l
 
 Adoption would be slow or impossible.
 
+# CodeFlow
+## DecentralizedStableCoin.sol
+  It consist of two functions mint and burn function to burn and mint the token
+## DSCEngine
+  *** constructor ***: The DSC Engine constructor takes the arry of token  address (address of collateral token (wetgh and wbtc)) and their priceFeeds and address of dsc
+  *** Functions ***
+  1. depositCollateral : 
+      - It takes token address and amount to be keep as collateral
+      - It transfers token collateral from the msg.sender to our contract address
+      - this way msg.sender deposit collateral to contract
+  2. mintDsc : 
+      - amountDscToMint The amount of DSC you want to mint . You can only mint DSC if you have  enough collateral
+      - It takes amountDscToMint 
+      - we check revert if healthfactor is low using ***_revertIfHealthFactorIsBroken(msg.sender)*** of msg.sender
+   
+
+
+   
+  
+# Important topics 
+ ![alt text](image.png)
+
+ ## liquidation working 
+ User deposited $100 in collateral and mints $50 in DSC
+
+Collateral value falls to $75, breaking the user's Health Factor (0.75)
+
+A liquidator burns $50 in DSC to close the position
+
+The liquidator is rewarded $75 in collateral
+
+The liquidator has profited $25
 
 ## openzeppelin
  *** https://github.com/OpenZeppelin/openzeppelin-contracts ***
  to install in foundry
 ```forge install openzeppelin/openzeppelin-contracts```
-
+## chainlink orcale 
+ ```forge install smartcontractkit/chainlink-brownie-contracts@latest```
 
 # Foundry
 
