@@ -290,6 +290,10 @@ The liquidator has profited $25
 ```forge install openzeppelin/openzeppelin-contracts```
 ## chainlink orcale 
  ```forge install smartcontractkit/chainlink-brownie-contracts@latest```
+## fuzz testing 
+  Fuzzing is a way to test your contract (or any program) by sending random or unexpected inputs to find bugs.
+  Instead of testing one input at a time manually, fuzzing tries lots of inputs automatically.
+  Helps catch errors like overflow, invalid states, or security bugs.
 
 # Foundry
 
