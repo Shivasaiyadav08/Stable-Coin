@@ -57,7 +57,9 @@ export function WriteContract() {
         args,
       });
 
-      const txHashStr = typeof tx === "string" ? tx : (tx as any)?.hash;
+      // Handle transaction hash safely
+      const txHashStr =
+        typeof tx === "string" ? tx : (tx as { hash?: string }).hash;
       if (!txHashStr) throw new Error("Transaction hash not found");
 
       setTxHash(txHashStr);
@@ -73,9 +75,17 @@ export function WriteContract() {
       });
 
       setStatus("Transaction confirmed!");
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      const reason = err?.shortMessage || err?.reason || err?.message || "Unknown error";
+
+      // Safely extract error message
+      const reason =
+        err instanceof Error
+          ? err.message
+          : (err as { reason?: string; shortMessage?: string })?.shortMessage ||
+            (err as { reason?: string; shortMessage?: string })?.reason ||
+            "Unknown error";
+
       setErrorReason(reason);
       setStatus("Transaction failed");
     }
@@ -125,8 +135,16 @@ export function WriteContract() {
       </button>
 
       {status && <p className="mt-2 font-medium text-center text-gray-700">{status}</p>}
-      {errorReason && <p className="mt-1 font-medium text-center text-red-600 break-words">Reason: {errorReason}</p>}
-      {txHash && <p className="mt-2 break-all text-blue-600 text-center font-mono">Transaction Hash: {txHash}</p>}
+      {errorReason && (
+        <p className="mt-1 font-medium text-center text-red-600 break-words">
+          Reason: {errorReason}
+        </p>
+      )}
+      {txHash && (
+        <p className="mt-2 break-all text-blue-600 text-center font-mono">
+          Transaction Hash: {txHash}
+        </p>
+      )}
     </div>
   );
 }

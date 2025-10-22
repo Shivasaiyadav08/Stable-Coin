@@ -9,9 +9,9 @@ export function ReadContract() {
 
   const [selectedFunction, setSelectedFunction] = useState<string>("");
   const [inputs, setInputs] = useState<{ [key: string]: string }>({});
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<unknown>(null); // ✅ unknown instead of any
 
-  // Read-only functions
+  // Filter read-only functions
   const functions = ABI.filter(
     f => f.type === "function" && (f.stateMutability === "view" || f.stateMutability === "pure")
   );
@@ -92,21 +92,16 @@ export function ReadContract() {
       </button>
 
       {/* Result box */}
-     {result && (
-  <div className="bg-gray-100 p-4 mt-4 rounded shadow-inner overflow-x-auto overflow-y-auto max-h-[28rem] w-full max-w-full">
-    <h3 className="font-semibold mb-2 text-gray-800">Result</h3>
-    <pre className="text-gray-800 whitespace-pre-wrap break-all text-sm sm:text-base max-w-full">
-      {/*/JSON.stringify(value, replacer, space)
-If the value is a BigInt, it converts it to a string (because JSON doesn’t support BigInt directly).
-Otherwise, it keeps the value as is.*/}
-      {JSON.stringify(
-        result,
-        (_, value) => (typeof value === "bigint" ? value.toString() : value),
-        2
+      {result !== null && (
+        <div className="bg-gray-100 p-4 mt-4 rounded shadow-inner overflow-x-auto overflow-y-auto max-h-[28rem] w-full max-w-full">
+          <h3 className="font-semibold mb-2 text-gray-800">Result</h3>
+          <pre className="text-gray-800 whitespace-pre-wrap break-all text-sm sm:text-base max-w-full">
+            {typeof result === "string"
+              ? result
+              : JSON.stringify(result, (_, value) => (typeof value === "bigint" ? value.toString() : value), 2)}
+          </pre>
+        </div>
       )}
-    </pre>
-  </div>
-)}
     </div>
   );
 }

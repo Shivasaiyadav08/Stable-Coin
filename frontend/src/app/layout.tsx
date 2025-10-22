@@ -5,10 +5,6 @@ import { Providers } from './providers';
 import { ConnectWallet } from './components/ConnectWallet';
 import Link from 'next/link';
 
- const metadata = {
-  title: 'Stable Coin DApp',
-  description: 'Interact with your Decentralized Stable Coin contract',
-};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
