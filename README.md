@@ -52,7 +52,7 @@ DeFi (Decentralized Finance) is a system where financial services are done on bl
 
 
 # Examples:
-## 1
+## example 1
 Imagine Alice wants to pay for her groceries with crypto:
 She owns 1 ETH.
 Today, 1 ETH = $2,000 → enough to buy groceries.
@@ -62,7 +62,8 @@ Now, if Alice uses a stablecoin (like USDC or your stablecoin):
 1 stablecoin = $1, always.
 She pays $50 worth of stablecoins → value stays $50 regardless of market swings.
 
-## 2
+## example 2
+
 🔹 Step 1: Deposit Collateral → Mint Stablecoin
 Alice has 1 ETH = $2,000.
 She wants to mint stablecoins.
@@ -105,7 +106,7 @@ If collateral drops too much → Liquidation happens.
 Other users repay the debt and earn profit from collateral discount.
 This keeps the stablecoin safe and always pegged near $1.
 
-  # categories and properties
+# categories and properties
    *** Relative stability ***
    *** stablity Method ***
    *** collateral type ***
@@ -253,7 +254,14 @@ Adoption would be slow or impossible.
 
 # CodeFlow
 ## DecentralizedStableCoin.sol
-  It consist of two functions mint and burn function to burn and mint the token
+  Contract is inherited BurnableERC20 instead of erc20 beacuse
+- It consist of two functions mint and burn function to burn and mint the token
+- ERC20 → has a hidden (internal) burn function. Only the contract itself can use it, not normal users.
+- ERC20Burnable → adds public burn functions so anyone (or owner) can burn tokens easily.
+- Your contract uses ERC20Burnable so that:
+- You (the owner) can burn tokens whenever needed.
+- You don’t need to rewrite the burn logic — it’s already safely built in.
+
 ## DSCEngine
   *** constructor ***: The DSC Engine constructor takes the arry of token  address (address of collateral token (wetgh and wbtc)) and their priceFeeds and address of dsc
   *** Functions ***
