@@ -4,58 +4,50 @@ import { useState } from "react";
 import { useWatchContractEvent } from "wagmi";
 import { CONTRACTADDRESS, ABI } from "../../constants";
 
-type EventLog = {
-  args?: {
-    user?: string;
-    amount?: bigint;
-    redeemFrom?: string;
-  };
-};
-
 export function EventLogs() {
-  const [depositevents, depositsetEvents] = useState<EventLog[]>([]);
-  const [redeemevents, redeemsetEvents] = useState<EventLog[]>([]);
+  const [depositEvents, setDepositEvents] = useState<any[]>([]); // eslint-disable-line @typescript-eslint/no-explicit-any
+  const [redeemEvents, setRedeemEvents] = useState<any[]>([]); // eslint-disable-line @typescript-eslint/no-explicit-any
 
-  // Watch CollateralDeposited
+  // Watch the CollateralDeposited event
   useWatchContractEvent({
     address: CONTRACTADDRESS,
     abi: ABI,
     eventName: "CollateralDeposited",
     onLogs(logs) {
       logs.forEach((log) => {
-        depositsetEvents((prev) => [...prev, log as EventLog].slice(-5));
+        setDepositEvents((prev) => [log, ...prev].slice(0, 5));
       });
     },
   });
 
-  // Watch CollateralRedeemed
+  // Watch the CollateralRedeemed event
   useWatchContractEvent({
     address: CONTRACTADDRESS,
     abi: ABI,
     eventName: "CollateralRedeemed",
     onLogs(logs) {
       logs.forEach((log) => {
-        redeemsetEvents((prev) => [...prev, log as EventLog].slice(-5));
+        setRedeemEvents((prev) => [log, ...prev].slice(0, 5));
       });
     },
   });
 
   return (
     <div className="overflow-hidden whitespace-nowrap bg-white text-black py-4 rounded">
-      {depositevents.map((e, i) => (
+      {depositEvents.map((e, i) => (
         <span
           key={`dep-${i}`}
           className="inline-block mx-4 px-3 py-1 bg-blue-600 text-white rounded animate-marquee"
         >
-          Deposit: {e.args?.user?.slice(0, 6)} → {e.args?.amount?.toString()}
+          Deposit: {e.args.user?.slice(0, 6)} → {e.args.amount?.toString()}
         </span>
       ))}
-      {redeemevents.map((e, i) => (
+      {redeemEvents.map((e, i) => (
         <span
           key={`red-${i}`}
           className="inline-block mx-4 px-3 py-1 bg-red-600 text-white rounded animate-marquee"
         >
-          Redeem: {e.args?.redeemFrom?.slice(0, 6)} → {e.args?.amount?.toString()}
+          Redeem: {e.args.redeemFrom?.slice(0, 6)} → {e.args.amount?.toString()}
         </span>
       ))}
     </div>
