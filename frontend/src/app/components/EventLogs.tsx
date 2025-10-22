@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -5,8 +6,8 @@ import { useWatchContractEvent } from "wagmi";
 import { CONTRACTADDRESS, ABI } from "../../constants";
 
 export function EventLogs() {
-  const [depositEvents, setDepositEvents] = useState<any[]>([]); // eslint-disable-line @typescript-eslint/no-explicit-any
-  const [redeemEvents, setRedeemEvents] = useState<any[]>([]); // eslint-disable-line @typescript-eslint/no-explicit-any
+  const [depositEvents, setDepositEvents] = useState<any[]>([]);
+  const [redeemEvents, setRedeemEvents] = useState<any[]>([]);
 
   // Watch the CollateralDeposited event
   useWatchContractEvent({
