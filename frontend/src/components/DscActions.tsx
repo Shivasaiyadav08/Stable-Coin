@@ -147,6 +147,8 @@ export default function DSCActions() {
     setRedeemData({ tokenAddress: "", amount: "" });
   };
 
+  
+
   return (
     <Card className="p-8">
       <h2 className="text-2xl font-bold text-white mb-6">Manage Your DSC</h2>
