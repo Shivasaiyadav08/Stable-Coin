@@ -6,9 +6,16 @@ import { useState, useCallback } from "react";
 
 interface TokenOperationParams {
   tokenAddress: `0x${string}`;
-  tokenABI: readonly any[];
+  tokenABI: readonly unknown[];
   spender: `0x${string}`;
   amount: bigint;
+}
+
+interface ContractWriteConfig {
+  abi: readonly unknown[];
+  address: `0x${string}`;
+  functionName: string;
+  args?: unknown[];
 }
 
 export const useTokenOperations = () => {
@@ -34,7 +41,7 @@ export const useTokenOperations = () => {
     });
 
     // Type-safe bigint conversion
-    const approvedBigInt = BigInt(approvedAmount as unknown as bigint);
+    const approvedBigInt = BigInt(approvedAmount as bigint);
 
     if (approvedBigInt < amount) {
       const approvalHash = await writeContractAsync({
@@ -48,7 +55,7 @@ export const useTokenOperations = () => {
   }, [config, writeContractAsync, address]);
 
   const executeContractWrite = useCallback(async (
-    contractConfig: any
+    contractConfig: ContractWriteConfig
   ): Promise<void> => {
     const txHash = await writeContractAsync(contractConfig);
     await waitForTransactionReceipt(config, { hash: txHash });

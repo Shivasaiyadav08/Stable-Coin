@@ -1,7 +1,7 @@
 // components/AccountDetails.tsx
 "use client";
 import { DSCENGINEABI, DSENGINECONTRACTADDRESS, WETHADDRESS } from "@/constants";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAccount, useConfig } from "wagmi";
 import { readContract } from "wagmi/actions";
 import { InputForm } from "./ui/Input";
@@ -15,11 +15,10 @@ export default function AccountDetails() {
   const [healthFactor, setHealthFactor] = useState<bigint | null>(null);
   const [totalCollateralInEth, setTotalCollateralInEth] = useState<number>(0);
   const [accountCollateralBalances, setAccountCollateralBalances] = useState<{token: string, balance: string}[]>([]);
-  const [collateralTokens, setCollateralTokens] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const { isConnected } = useAccount();
-  const config=useConfig()
+  const config = useConfig();
 
   // Format large numbers properly
   const formatHealthFactor = (hf: bigint | null): string => {
@@ -99,8 +98,6 @@ export default function AccountDetails() {
         functionName: "getCollateralTokens",
       }) as string[];
 
-      setCollateralTokens(tokens);
-
       // Get balances for each token
       const balances = await Promise.all(
         tokens.map(async (token) => {
@@ -149,7 +146,6 @@ export default function AccountDetails() {
     setHealthFactor(null);
     setTotalCollateralInEth(0);
     setAccountCollateralBalances([]);
-    setCollateralTokens([]);
 
     try {
       // Get account info (returns [totalDscMinted, collateralValueInUsd])

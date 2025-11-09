@@ -16,7 +16,7 @@ export default function UserDetails() {
     isConnected,
     address 
   } = useDscEngine();
-  const config=useConfig();
+  const config = useConfig();
 
   const [totalCollateralInEth, setTotalCollateralInEth] = useState<number>(0);
   const [userCollateralBalances, setUserCollateralBalances] = useState<{token: string, balance: string}[]>([]);
@@ -82,11 +82,6 @@ export default function UserDetails() {
     // If health factor is already below 1, cannot mint more
     if (currentHF < 1) return '0';
     
-    // Calculate maximum additional DSC that can be minted while keeping HF >= 1
-    // HF = (Collateral Value * Liquidation Threshold) / Total DSC
-    // We want HF >= 1, so: Total DSC <= Collateral Value * Liquidation Threshold
-    // Additional DSC = (Collateral Value * Liquidation Threshold) - Current DSC
-    
     // Assuming liquidation threshold of 0.8 (80%) for calculation
     const liquidationThreshold = 0.5;
     const maxTotalDSC = collateralValue * liquidationThreshold;
@@ -95,7 +90,7 @@ export default function UserDetails() {
     return Math.max(0, additionalDSC).toFixed(4);
   };
 
-  // Update all data
+  // Update all data - use ref to prevent infinite re-renders
   const updateAllData = useCallback(async () => {
     if (!isConnected || !address) return;
 
@@ -163,14 +158,19 @@ export default function UserDetails() {
     } finally {
       setIsRefreshing(false);
     }
+  // Only include stable dependencies - remove config if it changes frequently
   }, [isConnected, address, getAccountInfoData, getCollateralTokensData, getHealthFactorData]);
 
-  // Initial data load only
+  // Initial data load only - use a ref to track if we've already loaded
+  let hasLoadedRef = useState(false)[0];
+  
   useEffect(() => {
-    if (isConnected && address) {
+    if (isConnected && address && !hasLoadedRef) {
       updateAllData();
+      // Mark as loaded
+      hasLoadedRef = true;
     }
-  }, [isConnected, address]); // Only run when connection or address changes
+  }, [isConnected, address]); // Remove updateAllData from dependencies
 
   const handleManualRefresh = async () => {
     await refetchUserData();
@@ -188,7 +188,6 @@ export default function UserDetails() {
 
   const healthFactor = getHealthFactorData();
   const accountInfo = getAccountInfoData();
-  const collateralTokens = getCollateralTokensData();
 
   const healthFactorValue = healthFactor ? Number(healthFactor) / 1e18 : 0;
   const isUnsafe = healthFactorValue > 0 && healthFactorValue < 1;

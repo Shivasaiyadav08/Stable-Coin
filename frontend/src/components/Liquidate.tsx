@@ -26,7 +26,7 @@ export default function Liquidate() {
   const [message, setMessage] = useState("");
 
   // Simple health factor formatter
-  const formatHealthFactor = (hf: BigInt | null): string => {
+  const formatHealthFactor = (hf: bigint | null): string => {
     if (!hf) return '--';
     
     const hfString = hf.toString();
@@ -46,14 +46,14 @@ export default function Liquidate() {
     }
   };
 
-  const showMessage = (msg: string, isError: boolean = false) => {
+  const showMessage = (msg: string) => {
     setMessage(msg);
     setTimeout(() => setMessage(""), 5000);
   };
 
   const handleCheckHealthFactor = async () => {
     if (!isValidAddress(healthFactorAddress)) {
-      showMessage("Invalid address!", true);
+      showMessage("Invalid address!");
       return;
     }
 
@@ -61,8 +61,9 @@ export default function Liquidate() {
       const hf = await getHealthFactor(healthFactorAddress);
       setHealthFactor(formatHealthFactor(hf));
       showMessage(`Health Factor: ${formatHealthFactor(hf)}`);
-    } catch (error: any) {
-      showMessage("Failed to fetch health factor", true);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to fetch health factor";
+      showMessage(errorMessage);
       setHealthFactor("--");
     }
   };
@@ -93,17 +94,17 @@ export default function Liquidate() {
 
   const handleLiquidate = async () => {
     if (!isConnected) {
-      showMessage("Please connect your wallet!", true);
+      showMessage("Please connect your wallet!");
       return;
     }
 
     if (!isValidAddress(liquidateData.tokenAddress) || !isValidAddress(liquidateData.userAddress)) {
-      showMessage("Invalid addresses!", true);
+      showMessage("Invalid addresses!");
       return;
     }
 
     if (!isValidAmount(liquidateData.debtToCover)) {
-      showMessage("Invalid debt amount!", true);
+      showMessage("Invalid debt amount!");
       return;
     }
 
@@ -113,16 +114,16 @@ export default function Liquidate() {
       
       // Simple health factor check
       if (userHf && Number(userHf) / 1e18 >= 1) {
-        showMessage("User is healthy - cannot liquidate!", true);
+        showMessage("User is healthy - cannot liquidate!");
         return;
       }
 
       const toBeApproved = await getLiquidationAmount();
       
       await checkAndApprove({
-        tokenAddress: ERC20ADDRESS,
+        tokenAddress: ERC20ADDRESS as `0x${string}`,
         tokenABI: ERC20ABI,
-        spender: DSENGINECONTRACTADDRESS,
+        spender: DSENGINECONTRACTADDRESS as `0x${string}`,
         amount: toBeApproved
       });
 
@@ -130,13 +131,18 @@ export default function Liquidate() {
         abi: DSCENGINEABI,
         address: DSENGINECONTRACTADDRESS,
         functionName: "liquidate",
-        args: [liquidateData.tokenAddress, liquidateData.userAddress, BigInt(liquidateData.debtToCover)],
+        args: [
+          liquidateData.tokenAddress as `0x${string}`, 
+          liquidateData.userAddress as `0x${string}`, 
+          BigInt(liquidateData.debtToCover)
+        ],
       });
 
       showMessage("Liquidation successful!");
       setLiquidateData({ tokenAddress: "", userAddress: "", debtToCover: "" });
-    } catch (error: any) {
-      showMessage(error.message || "Liquidation failed", true);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Liquidation failed";
+      showMessage(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -148,7 +154,7 @@ export default function Liquidate() {
 
       {message && (
         <div className={`p-4 rounded-xl mb-6 ${
-          message.includes("failed") || message.includes("Invalid") || message.includes("cannot")
+          message.includes("failed") || message.includes("Invalid") || message.includes("cannot") || message.includes("Please")
             ? "bg-red-500/20 border border-red-500/30 text-red-300"
             : "bg-green-500/20 border border-green-500/30 text-green-300"
         }`}>
@@ -159,7 +165,7 @@ export default function Liquidate() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Health Factor Check */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-white">Check Health </h3>
+          <h3 className="text-lg font-semibold text-white">Check Health Factor</h3>
           <InputForm
             label="Account Address"
             placeholder="0x..."
@@ -167,12 +173,12 @@ export default function Liquidate() {
             onChange={(e) => setHealthFactorAddress(e.target.value)}
           />
           <Button onClick={handleCheckHealthFactor} variant="secondary">
-            Get Health
+            Get Health Factor
           </Button>
           
           {/* Health Factor Display */}
           <div className="p-4 bg-blue-500/20 border border-blue-500/30 rounded-xl">
-            <p className="text-blue-300 font-semibold">Health : {healthFactor}</p>
+            <p className="text-blue-300 font-semibold">Health Factor: {healthFactor}</p>
           </div>
         </div>
 

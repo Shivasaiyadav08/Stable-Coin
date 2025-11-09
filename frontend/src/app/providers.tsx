@@ -26,8 +26,7 @@ const config=getDefaultConfig({
 export default function Providers(props:{children:ReactNode}){
 
     const queryClient=new QueryClient();
-     const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+
   return(
    <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>

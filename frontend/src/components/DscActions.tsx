@@ -19,14 +19,14 @@ export default function DSCActions() {
   const [redeemData, setRedeemData] = useState({ tokenAddress: "", amount: "" });
   const [message, setMessage] = useState("");
 
-  const showMessage = (msg: string, isError: boolean = false) => {
+  const showMessage = (msg: string) => {
     setMessage(msg);
     setTimeout(() => setMessage(""), 5000);
   };
 
   const handleTransaction = async (transactionFn: () => Promise<void>, successMessage: string) => {
     if (!isConnected) {
-      showMessage("Please connect your wallet!", true);
+      showMessage("Please connect your wallet!");
       return;
     }
 
@@ -38,10 +38,11 @@ export default function DSCActions() {
       // Refresh user data after successful transaction
       setTimeout(() => {
         refetchUserData();
-      }, 2000); // Small delay to ensure blockchain state is updated
+      }, 2000);
       
-    } catch (error: any) {
-      showMessage(error.message || "Transaction failed", true);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Transaction failed";
+      showMessage(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -49,12 +50,12 @@ export default function DSCActions() {
 
   const handleDeposit = async () => {
     if (!isValidAddress(depositData.tokenAddress)) {
-      showMessage("Invalid token address!", true);
+      showMessage("Invalid token address!");
       return;
     }
 
     if (!isValidAmount(depositData.amount)) {
-      showMessage("Invalid deposit amount!", true);
+      showMessage("Invalid deposit amount!");
       return;
     }
 
@@ -76,13 +77,12 @@ export default function DSCActions() {
       });
     }, "Collateral deposited successfully!");
 
-    // Clear form after transaction
     setDepositData({ tokenAddress: "", amount: "" });
   };
 
   const handleMint = async () => {
     if (!isValidAmount(mintAmount)) {
-      showMessage("Invalid mint amount!", true);
+      showMessage("Invalid mint amount!");
       return;
     }
 
@@ -100,7 +100,7 @@ export default function DSCActions() {
 
   const handleBurn = async () => {
     if (!isValidAmount(burnAmount)) {
-      showMessage("Invalid burn amount!", true);
+      showMessage("Invalid burn amount!");
       return;
     }
 
@@ -126,12 +126,12 @@ export default function DSCActions() {
 
   const handleRedeem = async () => {
     if (!isValidAddress(redeemData.tokenAddress)) {
-      showMessage("Invalid token address!", true);
+      showMessage("Invalid token address!");
       return;
     }
 
     if (!isValidAmount(redeemData.amount)) {
-      showMessage("Invalid redeem amount!", true);
+      showMessage("Invalid redeem amount!");
       return;
     }
 

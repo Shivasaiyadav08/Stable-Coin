@@ -35,7 +35,7 @@ export default function HomePage() {
             <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-4 sm:mb-6 px-2">
               Advanced decentralized stable coin ecosystem with robust liquidation mechanisms
             </p>
-            
+
             {/* Contract Address Section - Mobile Optimized */}
             <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4 sm:p-6 max-w-3xl mx-auto mb-4 sm:mb-6">
               <p className="text-gray-300 text-sm sm:text-base mb-3">
@@ -49,11 +49,10 @@ export default function HomePage() {
                 </div>
                 <button
                   onClick={copyToClipboard}
-                  className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm font-medium ${
-                    copied 
-                      ? 'bg-green-600 hover:bg-green-700 text-white' 
+                  className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm font-medium ${copied
+                      ? 'bg-green-600 hover:bg-green-700 text-white'
                       : 'bg-indigo-600 hover:bg-indigo-700 text-white'
-                  }`}
+                    }`}
                 >
                   {copied ? (
                     <>
@@ -73,23 +72,22 @@ export default function HomePage() {
                 </button>
               </div>
             </div>
-
             {/* Note Section */}
             <div className="text-center max-w-3xl mx-auto mb-4 sm:mb-6">
               <p className="text-red-500 text-sm sm:text-base mb-2">
-                Note: It's just a prototype deployed in sepolia testnet
+                Note: It&apos;s just a prototype deployed in sepolia testnet.
               </p>
               <p className="text-gray-400 text-sm sm:text-base">
-                Recommended to use{" "}
-                <a 
-                  href="https://sepolia.etherscan.io/address/0xdd13E55209Fd76AfE204dBda4007C227904f0a81" 
+                Recommended to use{` `}
+                <a
+                  href="https://sepolia.etherscan.io/address/0xdd13E55209Fd76AfE204dBda4007C227904f0a81"
                   className="text-blue-400 hover:text-blue-300 underline transition-colors"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  WETC test tokens
-                </a>{" "}
-                with sepolia testnet
+                  WETH test tokens
+                </a>
+                {` `}with sepolia testnet
               </p>
             </div>
 
@@ -107,16 +105,16 @@ export default function HomePage() {
                 <h3 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4">About StableCoin DApp</h3>
                 <div className="text-gray-300 space-y-2 sm:space-y-3 text-sm sm:text-base">
                   <p>
-                    The StableCoin DApp allows users to mint decentralized stablecoins by depositing collateral assets like wETH or wBTC. 
+                    The StableCoin DApp allows users to mint decentralized stablecoins by depositing collateral assets like wETH or wBTC.
                     Once deposited, the collateral is locked within the protocol. Users can mint stablecoins up to a safe collateralization ratio (e.g., 150%).
                   </p>
                   <p>
-                    These stablecoins circulate freely — users can spend, lend, or provide liquidity. The protocol constantly monitors the collateral ratio 
-                    using Chainlink price feeds. If the ratio drops below the liquidation threshold (e.g., 120%), liquidators can repay the user's debt in 
+                    These stablecoins circulate freely — users can spend, lend, or provide liquidity. The protocol constantly monitors the collateral ratio
+                    using Chainlink price feeds. If the ratio drops below the liquidation threshold (e.g., 120%), liquidators can repay the user's debt in
                     exchange for collateral at a discounted rate (the liquidation bonus).
                   </p>
                   <p>
-                    Stablecoins used for liquidation are burned, and the collateral is transferred to the liquidator. If users repay their full debt plus fees, 
+                    Stablecoins used for liquidation are burned, and the collateral is transferred to the liquidator. If users repay their full debt plus fees,
                     they can call the burn & withdraw function to burn their stablecoins and release their locked collateral.
                   </p>
                 </div>
@@ -153,7 +151,7 @@ export default function HomePage() {
             <p className="text-gray-400 text-sm sm:text-base mb-4 sm:mb-6">
               Connect your wallet to access the decentralized stable coin dashboard
             </p>
-            
+
             {/* About Section for disconnected state */}
             <div className="mt-4 p-3 sm:p-4 bg-gray-700/50 border border-gray-600 rounded-lg sm:rounded-xl text-left">
               <h3 className="text-base sm:text-lg font-semibold text-white mb-2">About DSC Protocol</h3>
