@@ -1,29 +1,40 @@
-"use client";
+"use client"
 import '@rainbow-me/rainbowkit/styles.css';
+import {
+  getDefaultConfig,
+  RainbowKitProvider,
+} from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
-import { sepolia } from 'wagmi/chains';
-import { getDefaultConfig, RainbowKitProvider ,lightTheme} from '@rainbow-me/rainbowkit';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactNode, useState , useEffect} from 'react';
+import {
+  anvil,
+  sepolia
+} from 'wagmi/chains';
+import {
+  QueryClientProvider,
+  QueryClient,
+} from "@tanstack/react-query";
 
-const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string;
-const config = getDefaultConfig({
-  appName: "Stable Coin",
-  projectId,
-  chains: [sepolia],
-  ssr:false
-});
 
-const queryClient = new QueryClient();
+const config=getDefaultConfig({
+    appName:"tsender",
+    projectId:process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,
+    chains:[sepolia,anvil],
+    ssr:false
+})
 
-export function Providers({ children }: { children: React.ReactNode }) {
-    return (
-        <WagmiProvider config={config}>
-            <QueryClientProvider client={queryClient}>
-                <RainbowKitProvider theme={lightTheme({borderRadius:"medium"})} >
-                    {children}
-                </RainbowKitProvider>
-            </QueryClientProvider>
-        </WagmiProvider>
+export default function Providers(props:{children:ReactNode}){
 
-    )
+    const queryClient=new QueryClient();
+     const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  return(
+   <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider>
+           {props.children}
+        </RainbowKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
+  )
 }
