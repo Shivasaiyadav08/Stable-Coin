@@ -110,7 +110,7 @@ export default function HomePage() {
                   </p>
                   <p>
                     These stablecoins circulate freely — users can spend, lend, or provide liquidity. The protocol constantly monitors the collateral ratio
-                    using Chainlink price feeds. If the ratio drops below the liquidation threshold (e.g., 120%), liquidators can repay the user's debt in
+                    using Chainlink price feeds. If the ratio drops below the liquidation threshold (e.g., 120%), liquidators can repay the user&apos;s debt in
                     exchange for collateral at a discounted rate (the liquidation bonus).
                   </p>
                   <p>
