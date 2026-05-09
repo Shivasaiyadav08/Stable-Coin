@@ -1087,8 +1087,8 @@ MIT License
 
 ## Authors
 
-Shiva Sai
-Hemanth
+Shiva Sai,
+Hemanth,
 Sai Kumar
 
 ---
