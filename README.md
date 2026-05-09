@@ -303,69 +303,804 @@ The liquidator has profited $25
   Instead of testing one input at a time manually, fuzzing tries lots of inputs automatically.
   Helps catch errors like overflow, invalid states, or security bugs.
 
-# Foundry
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
 
-Foundry consists of:
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+# Documentation
+# Decentralized Stable Coin (DSC) Protocol
 
-## Documentation
+A decentralized overcollateralized stablecoin protocol inspired by MakerDAO DSS.  
+The protocol allows users to deposit collateral assets such as ETH and BTC, mint a USD-pegged decentralized stablecoin (DSC), redeem collateral, burn DSC, and liquidate unhealthy positions.
 
-https://book.getfoundry.sh/
+---
 
-## Usage
+# Table of Contents
 
-### Build
+1. Introduction
+2. Features
+3. System Architecture
+4. Workflow
+5. Smart Contracts
+6. Oracle System
+7. Health Factor Mechanism
+8. Liquidation Mechanism
+9. Security Features
+10. Installation
+11. Project Structure
+12. Build & Compile
+13. Deployment
+14. Testing
+15. Key Formulas
+16. Events
+17. Risks & Limitations
+18. Future Improvements
+19. License
+20. Authors
 
-```shell
-$ forge build
+---
+
+# 1. Introduction
+
+The Decentralized Stable Coin (DSC) protocol is an overcollateralized stablecoin system designed to maintain a 1 DSC = 1 USD peg.
+
+The system is:
+
+- Exogenously Collateralized
+- Algorithmically Stable
+- Overcollateralized
+- Decentralized
+
+The protocol is inspired by MakerDAO but simplified by removing governance, fees, and complex mechanisms.
+
+---
+
+# 2. Features
+
+## Core Features
+
+- Deposit collateral assets
+- Mint DSC stablecoins
+- Burn DSC tokens
+- Redeem collateral
+- Liquidate unhealthy positions
+- Chainlink price feed integration
+- Stale oracle protection
+- Reentrancy protection
+- Health factor enforcement
+
+---
+
+# 3. System Architecture
+
+## Main Contracts
+
+| Contract | Description |
+|----------|-------------|
+| OracleLib.sol | Protects protocol from stale oracle data |
+| DSCEngine.sol | Core logic contract |
+| DecentralizedStableCoin.sol | ERC20 stablecoin implementation |
+
+---
+
+# 4. Workflow
+
+## Stablecoin Minting Flow
+
+```text
+User Deposits Collateral
+            │
+            ▼
+DSCEngine Stores Collateral
+            │
+            ▼
+Fetch Price From Chainlink
+            │
+            ▼
+Calculate Health Factor
+            │
+            ▼
+If Safe → Mint DSC
+If Unsafe → Revert
 ```
 
-### Test
+---
 
-```shell
-$ forge test
+# 5. Smart Contracts
+
+---
+
+## 5.1 OracleLib.sol
+
+### Purpose
+
+The OracleLib library validates Chainlink oracle data and prevents the protocol from operating on stale prices.
+
+### Key Features
+
+- Stale price detection
+- Oracle validation
+- Timeout protection
+
+### Timeout
+
+```solidity
+uint256 private constant TIMEOUT = 3 hours;
 ```
 
-### Format
+If oracle data becomes older than 3 hours, the transaction reverts.
 
-```shell
-$ forge fmt
+### Main Function
+
+```solidity
+function staleCheckLatestRoundData()
 ```
 
-### Gas Snapshots
+### Function Flow
 
-```shell
-$ forge snapshot
+```text
+Get latest Chainlink price
+        │
+        ▼
+Check updatedAt != 0
+        │
+        ▼
+Check answeredInRound >= roundId
+        │
+        ▼
+Check timestamp freshness
+        │
+        ▼
+Return valid price data
 ```
 
-### Anvil
+### Validation Checks
 
-```shell
-$ anvil
+| Check | Purpose |
+|-------|----------|
+| updatedAt == 0 | Invalid oracle response |
+| answeredInRound < roundId | Incomplete oracle round |
+| secondsSince > TIMEOUT | Stale oracle data |
+
+---
+
+## 5.2 DSCEngine.sol
+
+### Purpose
+
+The DSCEngine contract manages:
+
+- Collateral deposits
+- DSC minting
+- Burning DSC
+- Collateral redemption
+- Liquidation logic
+- Health factor calculations
+
+---
+
+### State Variables
+
+#### Stablecoin Reference
+
+```solidity
+DecentralizedStableCoin private immutable i_dsc;
 ```
 
-### Deploy
+#### Liquidation Threshold
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+```solidity
+uint256 private constant LIQUIDATION_THRESHOLD = 50;
 ```
 
-### Cast
+Users must maintain 200% collateralization.
 
-```shell
-$ cast <subcommand>
+#### Liquidation Bonus
+
+```solidity
+uint256 private constant LIQUIDATION_BONUS = 10;
 ```
 
-### Help
+Liquidators receive a 10% bonus.
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
+#### Minimum Health Factor
+
+```solidity
+uint256 private constant MIN_HEALTH_FACTOR = 1e18;
 ```
+
+Accounts below this become liquidatable.
+
+---
+
+### Storage Mappings
+
+#### Price Feeds
+
+```solidity
+mapping(address => address) private s_priceFeeds;
+```
+
+Stores token → Chainlink feed mappings.
+
+---
+
+#### Collateral Deposits
+
+```solidity
+mapping(address => mapping(address => uint256))
+private s_collateralDeposited;
+```
+
+Tracks user collateral balances.
+
+---
+
+#### DSC Minted
+
+```solidity
+mapping(address => uint256) private s_DSCMinted;
+```
+
+Tracks minted DSC debt.
+
+---
+
+### Constructor Flow
+
+```text
+Receive:
+- collateral token addresses
+- price feed addresses
+- DSC contract address
+
+        │
+        ▼
+
+Validate array lengths
+
+        │
+        ▼
+
+Store token → feed mappings
+
+        │
+        ▼
+
+Initialize DSC token
+```
+
+---
+
+### Main Functionalities
+
+---
+
+### Deposit Collateral
+
+```solidity
+function depositCollateral()
+```
+
+Allows users to deposit approved collateral tokens.
+
+#### Flow
+
+```text
+Validate Amount > 0
+        │
+        ▼
+Validate Allowed Token
+        │
+        ▼
+Update Storage
+        │
+        ▼
+Transfer ERC20 Tokens
+        │
+        ▼
+Emit Event
+```
+
+---
+
+### Mint DSC
+
+```solidity
+function mintDsc()
+```
+
+Allows users to mint stablecoins against collateral.
+
+#### Process
+
+```text
+Increase Minted DSC
+        │
+        ▼
+Check Health Factor
+        │
+        ▼
+If Healthy:
+    Mint DSC
+Else:
+    Revert
+```
+
+---
+
+### Redeem Collateral
+
+```solidity
+function redeemCollateral()
+```
+
+Allows users to withdraw collateral.
+
+#### Requirements
+
+- Must maintain healthy collateralization
+- Cannot break health factor
+
+---
+
+### Burn DSC
+
+```solidity
+function burnDsc()
+```
+
+Reduces user debt and improves health factor.
+
+---
+
+### Liquidation
+
+```solidity
+function liquidate()
+```
+
+Allows liquidation of unhealthy positions.
+
+#### Liquidation Process
+
+```text
+Check User Health Factor
+            │
+            ▼
+If Below Minimum:
+            │
+            ▼
+Calculate Debt Coverage
+            │
+            ▼
+Calculate Bonus Collateral
+            │
+            ▼
+Transfer Collateral to Liquidator
+            │
+            ▼
+Burn DSC Debt
+            │
+            ▼
+Verify Health Improvement
+```
+
+---
+
+## 5.3 DecentralizedStableCoin.sol
+
+### Purpose
+
+ERC20 stablecoin implementation.
+
+Built using:
+
+- OpenZeppelin ERC20
+- ERC20Burnable
+- Ownable
+
+---
+
+### Features
+
+| Feature | Description |
+|----------|-------------|
+| Minting | Owner-only minting |
+| Burning | Owner-only burning |
+| ERC20 | Standard token implementation |
+| Access Control | Ownable |
+
+---
+
+### Mint Function
+
+```solidity
+function mint(address to, uint256 amount)
+```
+
+#### Validations
+
+- Address cannot be zero
+- Amount must be greater than zero
+
+---
+
+### Burn Function
+
+```solidity
+function burn(uint256 amount)
+```
+
+#### Validations
+
+- Amount > 0
+- Sufficient balance required
+
+---
+
+# 6. Oracle System
+
+The protocol uses Chainlink price feeds for collateral valuation.
+
+## Oracle Safety Checks
+
+The system validates:
+
+- Oracle timestamp
+- Round completeness
+- Data freshness
+
+## Stale Oracle Protection
+
+If Chainlink data becomes stale:
+
+- Protocol operations revert
+- Minting/redeeming stops
+- Protocol enters safe mode
+
+This prevents bad debt and incorrect liquidations.
+
+---
+
+# 7. Health Factor Mechanism
+
+The health factor determines whether a position is safe.
+
+## Formula
+
+```text
+Health Factor =
+(Collateral Value × Liquidation Threshold)
+÷ Total DSC Minted
+```
+
+---
+
+## Interpretation
+
+| Health Factor | Status |
+|---------------|--------|
+| > 1 | Safe |
+| = 1 | At risk |
+| < 1 | Liquidatable |
+
+---
+
+## Example
+
+Collateral Value = $200
+
+Minted DSC = $100
+
+Liquidation Threshold = 50%
+
+```text
+HF = (200 × 0.5) ÷ 100
+HF = 1
+```
+
+The account is exactly at liquidation threshold.
+
+---
+
+# 8. Liquidation Mechanism
+
+If a user's health factor drops below 1:
+
+- Anyone can liquidate the position
+- Liquidator burns DSC
+- Liquidator receives collateral + bonus
+
+---
+
+## Liquidation Bonus
+
+```solidity
+LIQUIDATION_BONUS = 10;
+```
+
+Liquidators receive 10% additional collateral.
+
+---
+
+## Example
+
+Debt covered = $100
+
+Liquidator receives:
+
+- $100 collateral
+- +10% bonus
+- Total = $110 collateral
+
+---
+
+# 9. Security Features
+
+## Reentrancy Protection
+
+Uses OpenZeppelin ReentrancyGuard.
+
+Protected functions:
+
+- depositCollateral
+- redeemCollateral
+- mintDsc
+- liquidate
+
+---
+
+## Oracle Staleness Protection
+
+Uses OracleLib to prevent stale price usage.
+
+---
+
+## Health Factor Enforcement
+
+All critical operations validate solvency.
+
+---
+
+## Custom Errors
+
+Gas-efficient custom Solidity errors are used throughout the protocol.
+
+---
+
+# 10. Installation
+
+## Prerequisites
+
+Install:
+
+- Foundry
+- Git
+
+---
+
+## Clone Repository
+
+```bash
+git clone <repository-url>
+cd dsc-protocol
+```
+
+---
+
+## Install Dependencies
+
+```bash
+forge install
+```
+
+---
+
+# 11. Project Structure
+
+```text
+/contracts
+    ├── DSCEngine.sol
+    ├── DecentralizedStableCoin.sol
+    └── libraries
+            └── OracleLib.sol
+
+/script
+    └── Deploy.s.sol
+
+/test
+    └── DSCEngineTest.t.sol
+
+/lib
+```
+
+---
+
+# 12. Build & Compile
+
+## Build Contracts
+
+```bash
+forge build
+```
+
+---
+
+## Format Code
+
+```bash
+forge fmt
+```
+
+---
+
+# 13. Deployment
+
+## Local Deployment
+
+```bash
+forge script script/Deploy.s.sol
+```
+
+---
+
+## Testnet Deployment
+
+```bash
+forge script script/Deploy.s.sol \
+--rpc-url <RPC_URL> \
+--private-key <PRIVATE_KEY> \
+--broadcast
+```
+
+---
+
+# 14. Testing
+
+## Run Tests
+
+```bash
+forge test
+```
+
+---
+
+## Verbose Testing
+
+```bash
+forge test -vvvv
+```
+
+---
+
+## Gas Snapshot
+
+```bash
+forge snapshot
+```
+
+---
+
+## Coverage
+
+```bash
+forge coverage
+```
+
+---
+
+# 15. Key Formulas
+
+## Health Factor
+
+```text
+HF =
+(Collateral × LiquidationThreshold)
+÷ DSCMinted
+```
+
+---
+
+## USD Value Calculation
+
+```text
+USDValue =
+((Price × 1e10) × Amount)
+÷ 1e18
+```
+
+---
+
+## Token Amount From USD
+
+```text
+TokenAmount =
+(USD × 1e18)
+÷ (Price × 1e10)
+```
+
+---
+
+# 16. Events
+
+## CollateralDeposited
+
+```solidity
+event CollateralDeposited(
+    address indexed user,
+    address indexed token,
+    uint256 indexed amount
+);
+```
+
+Triggered when collateral is deposited.
+
+---
+
+## CollateralRedeemed
+
+```solidity
+event CollateralRedeemed(
+    address indexed redeemFrom,
+    address indexed redeemTo,
+    address token,
+    uint256 amount
+);
+```
+
+Triggered during redemption or liquidation.
+
+---
+
+# 17. Risks & Limitations
+
+| Risk | Description |
+|------|-------------|
+| Oracle Failure | Protocol freezes |
+| Market Crash | Rapid collateral collapse |
+| Stablecoin Depeg | Severe market volatility |
+| Insolvency | Edge-case liquidation issues |
+
+---
+
+# 18. Future Improvements
+
+Potential upgrades:
+
+- Multi-oracle support
+- Governance system
+- Dynamic collateral ratios
+- Stability fees
+- Emergency shutdown
+- More collateral types
+- Cross-chain deployment
+
+---
+
+# 19. License
+
+MIT License
+
+---
+
+# 20. Authors
+
+## Authors
+
+Shiva Sai
+Hemanth
+Sai Kumar
+
+---
+
+# Conclusion
+
+The DSC protocol demonstrates how decentralized stablecoins can maintain stability using:
+
+- Overcollateralization
+- Health factor enforcement
+- Chainlink oracle validation
+- Liquidation mechanisms
+
+This project serves as a strong foundation for understanding decentralized finance (DeFi), lending systems, and stablecoin architecture similar to MakerDAO.
+
