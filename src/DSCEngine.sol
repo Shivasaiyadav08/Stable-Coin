@@ -95,7 +95,7 @@ contract DSCEngine is ReentrancyGuard {
     ///////////////////
     event CollateralDeposited(address indexed user, address indexed token, uint256 indexed amount);
     event CollateralRedeemed(address indexed redeemFrom, address indexed redeemTo, address token, uint256 amount); // if
-        // redeemFrom != redeemedTo, then it was liquidated
+    // redeemFrom != redeemedTo, then it was liquidated
 
     ///////////////////
     // Modifiers
@@ -270,8 +270,6 @@ contract DSCEngine is ReentrancyGuard {
         }
     }
 
-    
-
     ///////////////////
     // Private Functions
     ///////////////////
@@ -366,7 +364,11 @@ contract DSCEngine is ReentrancyGuard {
     function getUsdValue(
         address token,
         uint256 amount // in WEI
-    ) external view returns (uint256) {
+    )
+        external
+        view
+        returns (uint256)
+    {
         return _getUsdValue(token, amount);
     }
 
