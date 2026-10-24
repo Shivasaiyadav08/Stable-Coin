@@ -1083,14 +1083,11 @@ MIT License
 
 ---
 
-# 20. Authors
+# 20. Author
 
-## Authors
+## Author
 
-Shiva Sai,
-Hemanth,
-Sai Kumar
-
+Shiva Sai
 ---
 
 # Conclusion
